@@ -1,13 +1,16 @@
 import { useEffect, useState, useRef } from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import axios from 'axios'
-import {getProductInfo, EditedDesc, editedBusinessModels, editedCategories, editedTrl} from '../redux/slice'
 import ContentEditable from 'react-contenteditable'
+import {getProductInfo, EditedDesc, editedBusinessModels, editedCategories, editedTrl} from '../redux/productSlice'
+import { getConfig } from '../redux/configSlice'
 
 
 
 const Product =()=>{
     const data = useSelector(state=> {return state.Product})
+
+    const config = useSelector(state=>{return state.Config})
 
     const [activeTab, setActiveTab] = useState(true);    
 
@@ -23,6 +26,7 @@ const Product =()=>{
 
     useEffect(()=>{
       dispatch(getProductInfo())
+      dispatch(getConfig())
     },[dispatch])
 
     const changeTab = (tab)=>{
@@ -119,13 +123,14 @@ const Product =()=>{
 
     return <>
         {data.loading ? <p>Loading...</p> : Object.keys(data.productInfo).length > 0 && <main>
-        <div className='user_container'>
+          {console.log(data)}
+        {config.config.hasUserSection && <div className='user_container'>
             <img className='user_img' src={data.productInfo.user.profilePicture} alt="user"/>
             <div className='user_name'>
                 <p>{data.productInfo.user.firstName} {data.productInfo.user.lastName}</p>
                 <p>{data.productInfo.company.name}</p>
             </div>
-        </div>
+        </div>}
         <div className='product_img-container'>
             <img src={data.productInfo.picture} alt={`product ${data.productInfo.id}`} className="product_img"/>
         </div>
