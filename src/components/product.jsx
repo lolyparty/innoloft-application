@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import {useSelector, useDispatch} from 'react-redux'
+import axios from 'axios'
 import {getProductInfo, EditedDesc, editedBusinessModels, editedCategories, editedTrl} from '../redux/slice'
 import ContentEditable from 'react-contenteditable'
 
@@ -14,24 +15,26 @@ const Product =()=>{
 
     const [newCategory, setNewCategory] = useState('')
 
+    const [savedChanges, setSavedChanges] = useState(false)
+
     const text = useRef('');
 
     const dispatch = useDispatch()
+
+    useEffect(()=>{
+      dispatch(getProductInfo())
+    },[dispatch])
 
     const changeTab = (tab)=>{
         tab.target.innerHTML === 'Description' ? setActiveTab(true) : setActiveTab(false); 
     }
 
     const editChange = (e)=>{
-
-        // dispatch(EditedDesc(e.target.value.replace(/"/g, "'")))
         text.current = e.target.value;
-        // console.log(e.target.value)
     }
 
     const changeBusiness = (e)=>{
       setNewBusinessModel(e.target.value)
-      console.log(newBusinessModel)
     }
 
     const addBusinessModel = (e)=>{
@@ -49,7 +52,6 @@ const Product =()=>{
 
     const changeCategory = (e)=>{
       setNewCategory(e.target.value)
-      console.log(newCategory)
     }
 
     const addCategory = (e)=>{
@@ -74,14 +76,44 @@ const Product =()=>{
       ))
     }
 
-    const savingChanges =(e)=>{
+    const savingChanges = async (e)=>{
       e.preventDefault()
+      
+      const newBusinessModels = document.querySelectorAll('.product_attributes-business-models')
+
+      const newCategories = document.querySelectorAll('.product_attributes-categories')
+
+      const categories = []
+
+      const businessModels = []
+      
+      newBusinessModels.forEach((e)=>{
+        businessModels.push({id:e.id,name:e.innerHTML})
+      })
+
+      newCategories.forEach((e)=>{
+        categories.push({id:e.id,name:e.innerHTML})
+      })
+
+      dispatch(EditedDesc({
+        desc: text.current !== '' ? text.current : data.productInfo.description,
+        categories,
+        businessModels
+      }))
+
+      const response = await axios.put('https://api-test.innoloft.com/product/6781/', data.productInfo)
+      const responseMessage = await response
+      
+      if(responseMessage.status === 200){
+        setSavedChanges(true)
+        setTimeout(()=>{
+          setSavedChanges(false)
+        }, 2000)
+      }
+      
     }
 
-    useEffect(()=>{
-      dispatch(getProductInfo())
-      // console.log(text.current)
-    },[dispatch])
+
 
   
 
@@ -112,7 +144,7 @@ const Product =()=>{
             <div className='product_attributes'>
               <div className='product_attributes-container'><h3 className="attribute_heading">Categories</h3>
                 {data.productInfo.categories.map((item)=>{
-                return <ContentEditable html={item.name} tagName="p" className='product_attributes-categories' />
+                return <ContentEditable html={item.name} tagName="p" id={item.id} className='product_attributes-categories' />
                 })}
                 <br />
                 <input type="text" placeholder="Add New Category" class="new_attribute" value={newCategory} onChange={changeCategory}/> <button className="add_button" onClick={addCategory}>Add</button>
@@ -120,7 +152,7 @@ const Product =()=>{
 
                 <div className='product_attributes-container'>
                   <h3 className="attribute_heading">Business Models</h3> 
-                  {data.productInfo.businessModels.map((item)=>{ return <ContentEditable html={item.name} tagName="p" className='product_attributes-business-models' />})}
+                  {data.productInfo.businessModels.map((item)=>{ return <ContentEditable html={item.name} id={item.id} tagName="p" className='product_attributes-business-models' />})}
                   <br />
                   <input type="text" placeholder="Add New Business model" class="new_attribute" value={newBusinessModel} onChange={changeBusiness}/> <button className="add_button" onClick={addBusinessModel}>Add</button>
                 </div>
@@ -153,8 +185,8 @@ const Product =()=>{
           <div className="save">
             <button className="save_btn" onClick={savingChanges}>Save Changes</button>
           </div>
-          <div className="save_container">
-            <p className="saved">Saved Changes!</p>
+          <div className={`save_container ${savedChanges && `save_anim`}`}>
+            <p className="saved">Changes Saved Successfully!</p>
           </div>
         </main>}
         {data.error && <p>Error</p>}

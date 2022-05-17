@@ -237,18 +237,18 @@ main{
     top:1%; 
     right:2%; 
     opacity: 0;
+    transition:ease-in;
 }
 
-.save_container .save_anim{
-    animation: save 1s ease-in-out backwards;
+.save_anim{
+    animation: save 2s ease-in-out forwards;
 }
 
 @keyframes save {
     0%{
-        opacity:1
+        opacity: 10;
     }
     100%{
-        opacity:10;
+        opacity:0;
     }
-    
 }

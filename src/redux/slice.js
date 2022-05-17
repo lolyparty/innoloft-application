@@ -15,12 +15,18 @@ export const getProductInfo = createAsyncThunk('product/getProductInfo', async (
     return productData
 })
 
+// export const putProductInfo = createAsyncThunk('/product/editedProfutInfo', async ()=>{
+    
+// })
+
 const productSlice = createSlice({
     name:'Product',
     initialState,
     reducers:{
        EditedDesc : (state,action)=>{
-            state.productInfo.description = action.payload
+            state.productInfo.description = action.payload.desc
+            state.productInfo.categories = action.payload.categories
+            state.productInfo.businessModels = action.payload.businessModels
        },
        editedCategories:(state, action)=>{
            state.productInfo.categories.push(action.payload)
