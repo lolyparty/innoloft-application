@@ -178,9 +178,6 @@ const Product =()=>{
           <div className='company_location'>
             <h3 className="address_heading">Address</h3>
             <p className="address_paragraph">{data.productInfo.company.address.house}, {data.productInfo.company.address.street}, {data.productInfo.company.address.city.name}, {data.productInfo.company.address.country.name}.</p> 
-            {/* <p>Map</p>
-            <p>Long: {data.productInfo.company.address.longitude}</p>
-            <p>Lat: {data.productInfo.company.address.latitude}</p> */}
           </div>
           <div className="save">
             <button className="save_btn" onClick={saveAllChanges}>Save All Changes</button>
