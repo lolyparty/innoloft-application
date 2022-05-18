@@ -1,10 +1,9 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import axios from 'axios'
 import ContentEditable from 'react-contenteditable'
 import {getProductInfo, EditedDesc, editedbusinessModel, editedCategories, addBusinessModels, addCategories, editedTrl} from '../redux/productSlice'
 import { getConfig } from '../redux/configSlice'
-
 
 
 const Product =()=>{
@@ -20,8 +19,6 @@ const Product =()=>{
 
     const [savedChanges, setSavedChanges] = useState(false)
 
-    const text = useRef('');
-
     const dispatch = useDispatch()
 
     useEffect(()=>{
@@ -33,9 +30,6 @@ const Product =()=>{
         tab.target.innerHTML === 'Description' ? setActiveTab(true) : setActiveTab(false); 
     }
 
-    const editChange = (e)=>{
-        text.current = e.target.value;
-    }
 
     const changeBusiness = (e)=>{
       setNewBusinessModel(e.target.value)
@@ -121,7 +115,6 @@ const Product =()=>{
     }
 
 
-
     return <>
         {data.loading ? <p>Loading...</p> : Object.keys(data.productInfo).length > 0 && <main>
         {config.config.hasUserSection && <div className='user_container'>
@@ -145,7 +138,7 @@ const Product =()=>{
             </div>
             
             {activeTab ? <div>
-              <ContentEditable html={data.productInfo.description} onChange={editChange} className='product_description' onBlur={saveDesc}/>
+              <ContentEditable html={data.productInfo.description} className='product_description' onBlur={saveDesc}/>
             </div>
             : 
             <div className='product_attributes'>
