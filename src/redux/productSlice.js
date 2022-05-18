@@ -21,14 +21,18 @@ const productSlice = createSlice({
     initialState,
     reducers:{
         EditedDesc : (state,action)=>{
-                state.productInfo.description = action.payload.desc
-                state.productInfo.categories = action.payload.categories
-                state.productInfo.businessModels = action.payload.businessModels
+                state.productInfo.description = action.payload
+        },
+        editedbusinessModel:(state, action)=>{
+                state.productInfo.businessModels.splice(action.payload.idIndex,1,action.payload.edit)
         },
         editedCategories:(state, action)=>{
+            state.productInfo.categories.splice(action.payload.idIndex,1,action.payload.edit)
+        },
+        addCategories:(state, action)=>{
             state.productInfo.categories.push(action.payload)
         },
-        editedBusinessModels:(state, action)=>{
+        addBusinessModels:(state, action)=>{
             state.productInfo.businessModels.push(action.payload)
         },
         editedTrl:(state, action)=>{
@@ -54,4 +58,4 @@ const productSlice = createSlice({
 
 export default productSlice.reducer
 
-export const {EditedDesc, editedCategories, editedBusinessModels, editedTrl} = productSlice.actions
+export const {EditedDesc, editedbusinessModel, editedCategories, addCategories, addBusinessModels, editedTrl} = productSlice.actions

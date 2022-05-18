@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import axios from 'axios'
 import ContentEditable from 'react-contenteditable'
-import {getProductInfo, EditedDesc, editedBusinessModels, editedCategories, editedTrl} from '../redux/productSlice'
+import {getProductInfo, EditedDesc, editedbusinessModel, editedCategories, addBusinessModels, addCategories, editedTrl} from '../redux/productSlice'
 import { getConfig } from '../redux/configSlice'
 
 
@@ -44,7 +44,7 @@ const Product =()=>{
     const addBusinessModel = (e)=>{
       e.preventDefault()
       if(newBusinessModel !== ""){
-        dispatch(editedBusinessModels(
+        dispatch(addBusinessModels(
           {
             id:0,
             name:newBusinessModel
@@ -61,7 +61,7 @@ const Product =()=>{
     const addCategory = (e)=>{
       e.preventDefault()
       if(newCategory !== ""){
-        dispatch(editedCategories(
+        dispatch(addCategories(
           {
             id:0,
             name:newCategory
@@ -80,50 +80,50 @@ const Product =()=>{
       ))
     }
 
-    const savingChanges = async (e)=>{
+    const saveDesc = (e)=>{
+      dispatch(EditedDesc(e.target.innerHTML))
+    }
+
+    const editBusinessModels= (e)=>{
+      let id = e.target.id
+      const idArray = data.productInfo.businessModels.map((e)=>e.id)
+      const idIndex = idArray.indexOf(parseInt(id))
+      const edit = {
+        id,
+        name:e.target.innerHTML
+      }
+      dispatch(editedbusinessModel({idIndex,edit})) 
+    }
+
+    const editCategories= (e)=>{
+      let id = parseInt(e.target.id)
+      const idArray = data.productInfo.categories.map((e)=>e.id)
+      const idIndex = idArray.indexOf(id)
+      const edit = {
+        id,
+        name:e.target.innerHTML
+      }
+      dispatch(editedCategories({idIndex,edit})) 
+    }
+  
+
+    const saveAllChanges = async (e)=>{
       e.preventDefault()
-      
-      const newBusinessModels = document.querySelectorAll('.product_attributes-business-models')
-
-      const newCategories = document.querySelectorAll('.product_attributes-categories')
-
-      const categories = []
-
-      const businessModels = []
-      
-      newBusinessModels.forEach((e)=>{
-        businessModels.push({id:e.id,name:e.innerHTML})
-      })
-
-      newCategories.forEach((e)=>{
-        categories.push({id:e.id,name:e.innerHTML})
-      })
-
-      dispatch(EditedDesc({
-        desc: text.current !== '' ? text.current : data.productInfo.description,
-        categories,
-        businessModels
-      }))
-
       const response = await axios.put('https://api-test.innoloft.com/product/6781/', data.productInfo)
       const responseMessage = await response
-      
+
       if(responseMessage.status === 200){
         setSavedChanges(true)
         setTimeout(()=>{
           setSavedChanges(false)
         }, 2000)
       }
-      
     }
 
 
 
-  
-
     return <>
         {data.loading ? <p>Loading...</p> : Object.keys(data.productInfo).length > 0 && <main>
-          {console.log(data)}
         {config.config.hasUserSection && <div className='user_container'>
             <img className='user_img' src={data.productInfo.user.profilePicture} alt="user"/>
             <div className='user_name'>
@@ -144,12 +144,14 @@ const Product =()=>{
                 <button onClick={changeTab} className={!activeTab ? 'active_btn' : ''}>Attributes</button>
             </div>
             
-            {activeTab ? <ContentEditable html={data.productInfo.description} onChange={editChange} className='product_description'/>
+            {activeTab ? <div>
+              <ContentEditable html={data.productInfo.description} onChange={editChange} className='product_description' onBlur={saveDesc}/>
+            </div>
             : 
             <div className='product_attributes'>
               <div className='product_attributes-container'><h3 className="attribute_heading">Categories</h3>
                 {data.productInfo.categories.map((item)=>{
-                return <ContentEditable html={item.name} tagName="p" id={item.id} className='product_attributes-categories' />
+                return <ContentEditable html={item.name} tagName="p" id={item.id} className='product_attributes-categories' onBlur={editCategories}/>
                 })}
                 <br />
                 <input type="text" placeholder="Add New Category" class="new_attribute" value={newCategory} onChange={changeCategory}/> <button className="add_button" onClick={addCategory}>Add</button>
@@ -157,7 +159,7 @@ const Product =()=>{
 
                 <div className='product_attributes-container'>
                   <h3 className="attribute_heading">Business Models</h3> 
-                  {data.productInfo.businessModels.map((item)=>{ return <ContentEditable html={item.name} id={item.id} tagName="p" className='product_attributes-business-models' />})}
+                  {data.productInfo.businessModels.map((item)=>{ return <ContentEditable html={item.name} id={item.id} tagName="p" className='product_attributes-business-models' onBlur={editBusinessModels}/>})}
                   <br />
                   <input type="text" placeholder="Add New Business model" class="new_attribute" value={newBusinessModel} onChange={changeBusiness}/> <button className="add_button" onClick={addBusinessModel}>Add</button>
                 </div>
@@ -188,7 +190,7 @@ const Product =()=>{
             <p>Lat: {data.productInfo.company.address.latitude}</p> */}
           </div>
           <div className="save">
-            <button className="save_btn" onClick={savingChanges}>Save Changes</button>
+            <button className="save_btn" onClick={saveAllChanges}>Save All Changes</button>
           </div>
           <div className={`save_container ${savedChanges && `save_anim`}`}>
             <p className="saved">Changes Saved Successfully!</p>
