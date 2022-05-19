@@ -124,6 +124,7 @@ const Product =()=>{
                 <p>{data.productInfo.company.name}</p>
             </div>
         </div>}
+        <div className="product_details-container">
         <div className='product_img-container'>
             <img src={data.productInfo.picture} alt={`product ${data.productInfo.id}`} className="product_img"/>
         </div>
@@ -131,7 +132,7 @@ const Product =()=>{
                 <h2 className='product_name'>{data.productInfo.name}</h2>
                 <p className='product_type'>{data.productInfo.type.name}</p>
         </div>
-          <div>
+          
             <div className='tab_btns'>
                 <button onClick={changeTab} className={activeTab ? 'active_btn' : ''}>Description</button>
                 <button onClick={changeTab} className={!activeTab ? 'active_btn' : ''}>Attributes</button>
@@ -179,9 +180,9 @@ const Product =()=>{
             <h3 className="address_heading">Address</h3>
             <p className="address_paragraph">{data.productInfo.company.address.house}, {data.productInfo.company.address.street}, {data.productInfo.company.address.city.name}, {data.productInfo.company.address.country.name}.</p> 
           </div>
-          <div className="save">
+          {/* <div className="save">
             <button className="save_btn" onClick={saveAllChanges}>Save All Changes</button>
-          </div>
+          </div> */}
           <div className={`save_container ${savedChanges && `save_anim`}`}>
             <p className="saved">Changes Saved Successfully!</p>
           </div>

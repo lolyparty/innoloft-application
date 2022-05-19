@@ -271,6 +271,38 @@ main{
     main{
         width:80%;
         float:right;
-        padding:10px;
+        padding:30px 10px;
+    }
+
+    .user_container{
+        flex-direction: column;
+        float: right;
+        width:25%;
+        text-align: center;
+    }
+
+    .user_img{
+        margin-bottom: 10px;
+    }
+
+    .user_name p{
+        line-height: 1.5;
+        margin:10px 0px;
+    }
+
+    .user_img{
+        height:170px;
+        width:170px;
+    }
+
+    .product_details-container{
+        float:left;
+        width:70%;
+    }
+
+    .company_location{
+        float:right;
+        width:25%;
+        margin-top:60px;
     }
 }
