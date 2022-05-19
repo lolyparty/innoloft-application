@@ -277,7 +277,7 @@ main{
     .user_container{
         flex-direction: column;
         float: right;
-        width:25%;
+        width:28%;
         text-align: center;
     }
 
@@ -302,7 +302,11 @@ main{
 
     .company_location{
         float:right;
-        width:25%;
+        width:28%;
         margin-top:60px;
+    }
+
+    .save{
+        width:100%;
     }
 }

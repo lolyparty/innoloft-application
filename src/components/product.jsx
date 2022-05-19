@@ -180,9 +180,9 @@ const Product =()=>{
             <h3 className="address_heading">Address</h3>
             <p className="address_paragraph">{data.productInfo.company.address.house}, {data.productInfo.company.address.street}, {data.productInfo.company.address.city.name}, {data.productInfo.company.address.country.name}.</p> 
           </div>
-          {/* <div className="save">
+          <div className="save">
             <button className="save_btn" onClick={saveAllChanges}>Save All Changes</button>
-          </div> */}
+          </div>
           <div className={`save_container ${savedChanges && `save_anim`}`}>
             <p className="saved">Changes Saved Successfully!</p>
           </div>
